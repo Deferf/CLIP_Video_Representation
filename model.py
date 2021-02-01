@@ -58,7 +58,7 @@ def video_to_tensor(video_file, preprocess, skip = 0):
 
   return np.stack(images)
 
-def gen_video_encoder(video_file, preprocess, model, resolution, image_mean, image_std):
+def gen_video_encoder(preprocess, model, resolution, image_mean, image_std):
 
   def encode_video(video_file, skip = 0):
     image_input = video_to_tensor(video_file, preprocess, skip = 0)
