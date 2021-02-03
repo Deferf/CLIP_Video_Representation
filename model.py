@@ -33,38 +33,48 @@ def encode_video(video_file, preprocess, model, resolution, image_mean, image_st
   return image_features
 
 
-def video_to_tensor(video_file, preprocess, skip = 0):
+def video_to_tensor(video_file, preprocess, each = 0, use_fps = False):
+  # Samples a frame each X frames.
   torch.device("cuda:0")
   cap = cv2.VideoCapture(video_file)
   frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
   frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
   frameHeight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+  fps = int(cap.get(cv2.CAP_PROP_FPS))
   images = []
   fc = 0
   ret = True
+  #print(fps, "fps")
 
-  skip_counter = 0
+  if use_fps:
+    each = fps
+
+  skip_counter = each
+
+  included = []
 
   while (fc < frameCount  and ret):
-      if skip_counter == skip:
-        ret, frame = cap.read()
-        skip_counter = 0
-        if not ret: # if file is empty break loop
-            break
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        images.append(preprocess(Image.fromarray(frame_rgb).convert("RGB")))
-      else:
-        skip_counter += 1
+    if skip_counter >= each:
+      ret, frame = cap.read()
+      skip_counter = 0
+      if not ret: # if file is empty break loop
+          break
+      frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+      images.append(preprocess(Image.fromarray(frame_rgb).convert("RGB")))
+      included.append(fc)
 
-      fc += 1
+    skip_counter += 1
+
+    fc += 1
+
   cap.release()
-
+  #print(included)
   return torch.tensor(np.stack(images)).cuda()
 
 def gen_video_encoder(preprocess, model, resolution, image_mean, image_std):
 
   def encode_video(video_file, skip = 0):
-    image_input = video_to_tensor(video_file, preprocess, skip = 0)
+    image_input = video_to_tensor(video_file, preprocess, each = 0)
     image_input -= image_mean[:, None, None]
     image_input /= image_std[:, None, None]
 
