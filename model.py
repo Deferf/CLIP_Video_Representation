@@ -57,6 +57,7 @@ def video_to_tensor(video_file, preprocess, skip = 0):
         skip_counter += 1
 
       fc += 1
+  cap.release()
 
   return torch.tensor(np.stack(images)).cuda()
 
@@ -71,7 +72,6 @@ def gen_video_encoder(preprocess, model, resolution, image_mean, image_std):
       image_features = model.encode_image(image_input).float()
 
     image_features /= image_features.norm(dim=-1, keepdim=True)
-    cap.release()
 
     return image_features
 
