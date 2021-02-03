@@ -73,7 +73,7 @@ def video_to_tensor(video_file, preprocess, each = 0, use_fps = False):
 
 def gen_video_encoder(preprocess, model, resolution, image_mean, image_std):
 
-  def encode_video(video_file, skip = 0):
+  def encode_video(video_file, each = 0):
     image_input = video_to_tensor(video_file, preprocess, each = 0)
     image_input -= image_mean[:, None, None]
     image_input /= image_std[:, None, None]
