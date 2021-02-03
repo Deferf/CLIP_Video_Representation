@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from PIL import Image
+import torch
 
 def encode_video(video_file, preprocess, model, resolution, image_mean, image_std):
   cap = cv2.VideoCapture(video_file)
@@ -33,6 +34,7 @@ def encode_video(video_file, preprocess, model, resolution, image_mean, image_st
 
 
 def video_to_tensor(video_file, preprocess, skip = 0):
+  torch.device("cuda:0")
   cap = cv2.VideoCapture(video_file)
   frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
   frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
