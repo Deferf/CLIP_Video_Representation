@@ -34,7 +34,7 @@ def encode_video(video_file, preprocess, model, resolution, image_mean, image_st
 
 def video_to_tensor(video_file, preprocess, skip = 0):
   cap = cv2.VideoCapture(video_file)
-  frameCount = 50#int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+  frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
   frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
   frameHeight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
   images = []
