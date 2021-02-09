@@ -105,10 +105,10 @@ def encode_text(tokenizer, texts):
   return text_features
 
 
-def gen_text_encoder(tokenizer):
+def gen_text_encoder(tokenizer, context_len):
   def encode_text(texts):
     text_tokens = [tokenizer.encode(desc) for desc in texts]
-    text_input = torch.zeros(len(text_tokens), model.context_length, dtype=torch.long)
+    text_input = torch.zeros(len(text_tokens), context_len, dtype=torch.long)
     sot_token = tokenizer.encoder['<|startoftext|>']
     eot_token = tokenizer.encoder['<|endoftext|>']
 
