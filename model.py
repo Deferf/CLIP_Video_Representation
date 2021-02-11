@@ -105,7 +105,7 @@ def encode_text(tokenizer, texts):
   return text_features
 
 
-def gen_text_encoder(tokenizer, context_len):
+def gen_text_encoder(tokenizer, model, context_len):
   def encode_text(texts):
     text_tokens = [tokenizer.encode(desc) for desc in texts]
     text_input = torch.zeros(len(text_tokens), context_len, dtype=torch.long)
