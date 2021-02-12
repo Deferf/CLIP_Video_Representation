@@ -106,7 +106,7 @@ def encode_text(tokenizer, texts):
 
 
 def gen_text_encoder(tokenizer, model, context_len):
-  def encode_text_2(texts):
+  def custom_encode_text(texts):
     clip = context_len - 2 # generally context_len is 77, we substract 2 because we need 2 start and end tokens
     text_tokens = [tokenizer.encode(desc)[:clip] for desc in texts] # we will clip the sentences 
     text_input = torch.zeros(len(text_tokens), context_len, dtype=torch.long)
@@ -117,11 +117,11 @@ def gen_text_encoder(tokenizer, model, context_len):
       tokens = [sot_token] + tokens + [eot_token]
       token_tensor = torch.tensor(tokens)
       text_input[i, :len(tokens)] = token_tensor
-      
+
     text_input = text_input.cuda()
     with torch.no_grad():
         text_features = model.encode_text(text_input).float()
     text_features /= text_features.norm(dim=-1, keepdim=True)
 
     return text_features
-  return encode_text
+  return custom_encode_text
